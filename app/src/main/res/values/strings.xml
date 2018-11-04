@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Opener</string>
     <string name="batteryPercentAmount" translatable="false">Battery level: %1$d%%</string>
-    <string name="chargeStatus" >Status: %1$s</string>
+    <string name="chargeStatus">Status: %1$s</string>
+    <string name="locationText" >Location: %1$s</string>
 </resources>
