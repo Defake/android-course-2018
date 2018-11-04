@@ -15,13 +15,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btn = findViewById(R.id.openBatteryScreenButton);
-        final Intent intent = new Intent(this, BatteryActivity.class);
-        btn.setOnClickListener(new View.OnClickListener() {
+        Button openBatteryBtn = findViewById(R.id.openBatteryScreenButton);
+        final Intent batteryIntent = new Intent(this, BatteryActivity.class);
+        openBatteryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(intent);
-                Log.d(TAG, "BUTTON PRESSED!");
+                startActivity(batteryIntent);
             }
         });
 

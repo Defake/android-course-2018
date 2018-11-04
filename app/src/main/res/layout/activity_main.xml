@@ -18,13 +18,13 @@
             android:id="@+id/openBatteryScreenButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open battery"
+            android:text="Charge status"
             android:textAllCaps="true" />
 
         <Button
             android:id="@+id/openLocationActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open Location" />
+            android:text="My Location" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
