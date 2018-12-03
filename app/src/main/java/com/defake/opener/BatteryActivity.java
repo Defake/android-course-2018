@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class BatteryActivity extends AppCompatActivity {
@@ -32,10 +33,16 @@ public class BatteryActivity extends AppCompatActivity {
 
         BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
         int batteryLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        final ProgressBar batteryLevelBar = findViewById(R.id.batteryLevel);
+        batteryLevelBar.setProgress(batteryLevel);
 
-        final TextView batteryPercentTextView = findViewById(R.id.batteryPercentTextView);
-        batteryPercentTextView.setText(getString(R.string.batteryPercentAmount, batteryLevel));
-        this.registerReceiver(this.batteryStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(batteryStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(batteryStatusReceiver);
     }
 
 }

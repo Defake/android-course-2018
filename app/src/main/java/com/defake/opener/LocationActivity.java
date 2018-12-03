@@ -7,12 +7,15 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -28,16 +31,26 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
 
+        showLoading();
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            showLocation();
+            new LoadLocationTask().execute();
         } else {
-            setLocationText("loading...");
             ActivityCompat.requestPermissions(
                     this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
+        }
+    }
+
+    private class LoadLocationTask extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            synchronized (this) {
+                showLocation();
+            }
+            return null;
         }
     }
 
@@ -49,12 +62,17 @@ public class LocationActivity extends AppCompatActivity {
             if (grantResults[0] == 0) {
                 showLocation();
             } else {
-                setLocationText("unavailable");
+                showLocationText("unavailable");
             }
         }
     }
 
     private void showLocation() throws SecurityException {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -65,16 +83,35 @@ public class LocationActivity extends AppCompatActivity {
             String address = addresses.get(0).getAddressLine(0);
             String city = addresses.get(0).getLocality();
             String fullAddress = city + ", " + address;
-            setLocationText(fullAddress);
+
+            showLocationText(fullAddress);
         } catch (IOException e) {
             Log.e(TAG, "Can't read location. " + e.getMessage());
-            setLocationText("unavailable");
+            showLocationText("unavailable");
         }
     }
 
-    private void setLocationText(String text) {
-        final TextView chargeStatusTextView = findViewById(R.id.locationTextView);
-        chargeStatusTextView.setText(getString(R.string.locationText, text));
+    private void showLocationText(final String text) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final TextView locationText = findViewById(R.id.locationTextView);
+                final ProgressBar loadingBar = findViewById(R.id.locationProgressBar);
+
+                loadingBar.setVisibility(View.INVISIBLE);
+                locationText.setVisibility(View.VISIBLE);
+                locationText.setText(getString(R.string.locationText, text));
+            }
+        });
+
+    }
+
+    private void showLoading() {
+        final TextView locationText = findViewById(R.id.locationTextView);
+        final ProgressBar loadingBar = findViewById(R.id.locationProgressBar);
+
+        locationText.setVisibility(View.INVISIBLE);
+        loadingBar.setVisibility(View.VISIBLE);
     }
 
 }
