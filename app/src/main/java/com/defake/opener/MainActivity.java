@@ -32,5 +32,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(locationIntent);
             }
         });
+
+        Button openApiBtn = findViewById(R.id.openApiScreenButton);
+        final Intent apiIntent = new Intent(this, ApiActivity.class);
+        openApiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(apiIntent);
+            }
+        });
     }
 }
